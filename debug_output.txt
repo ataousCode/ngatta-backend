@@ -1,1 +1,0 @@
-ENV DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ngatta?schema=public

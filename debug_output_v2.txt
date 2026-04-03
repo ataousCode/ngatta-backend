@@ -1,0 +1,5 @@
+Testing with various constructor options for URL: postgresql://postgres:postgres@localhost:5432/ngatta?schema=public
+
+--- Testing option: {"datasourceUrl":"postgresql://postgres:postgres@localhost:5432/ngatta?schema=public"} ---
+
+--- Testing option: {"datasources":{"db":{"url":"postgresql://postgres:postgres@localhost:5432/ngatta?schema=public"}}} ---

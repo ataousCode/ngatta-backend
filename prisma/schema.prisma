@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                 String   @id @default(uuid())
+  phone              String   @unique
+  email              String?  @unique
+  password           String?
+  name               String?
+  avatar             String?
+  isEmailVerified    Boolean  @default(false)
+  role               Role     @default(USER)
+  hashedRefreshToken String?
+  createdAt          DateTime @default(now())
+
+  driver Driver?
+  rides  Ride[]  @relation("UserRides")
+}
+
+model Driver {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  isOnline  Boolean  @default(false)
+  lat       Float?
+  lng       Float?
+
+  user      User     @relation(fields: [userId], references: [id])
+  rides     Ride[]   @relation("DriverRides")
+}
+
+model Ride {
+  id            String   @id @default(uuid())
+  userId        String
+  driverId      String?
+
+  pickupLat     Float
+  pickupLng     Float
+  dropLat       Float
+  dropLng       Float
+
+  status        RideStatus @default(REQUESTED)
+  createdAt     DateTime   @default(now())
+
+  user          User   @relation("UserRides", fields: [userId], references: [id])
+  driver        Driver? @relation("DriverRides", fields: [driverId], references: [id])
+}
+
+enum Role {
+  USER
+  DRIVER
+  ADMIN
+}
+
+enum RideStatus {
+  REQUESTED
+  ACCEPTED
+  ON_GOING
+  COMPLETED
+  CANCELLED
+}
+
+model Otp {
+  id        String   @id @default(uuid())
+  phone     String
+  code      String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([phone])
+}

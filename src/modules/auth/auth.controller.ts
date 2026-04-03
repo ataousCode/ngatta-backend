@@ -3,8 +3,6 @@ import {
   Controller,
   Get,
   Post,
-  Patch,
-  Delete,
   UseGuards,
   HttpCode,
   HttpStatus,
@@ -15,7 +13,6 @@ import { AuthService } from './auth.service';
 import { RequestOtpDto } from './dto/request-otp.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -68,35 +65,6 @@ export class AuthController {
   @ApiOperation({ summary: 'Invalidate current refresh token and logout' })
   async logout(@GetUser('userId') userId: string) {
     return this.authService.logout(userId);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('me')
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get current authenticated user info' })
-  async me(@GetUser() user: any) {
-    return user;
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Patch('profile')
-  @ApiBearerAuth()
-  @ApiBody({ type: UpdateProfileDto })
-  @ApiOperation({ summary: 'Update user profile (name, email, avatar)' })
-  async updateProfile(
-    @GetUser('userId') userId: string,
-    @Body() dto: UpdateProfileDto,
-  ) {
-    return this.authService.updateProfile(userId, dto);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Delete('account')
-  @ApiBearerAuth()
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Permanently delete user account' })
-  async deleteAccount(@GetUser('userId') userId: string) {
-    return this.authService.deleteAccount(userId);
   }
 
   @Post('forgot-password')

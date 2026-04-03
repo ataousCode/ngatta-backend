@@ -8,6 +8,7 @@ import { PrismaModule } from './database/prisma.module';
 import { SocketModule } from './modules/socket/socket.module';
 import { DriverModule } from './modules/driver/driver.module';
 import { RideModule } from './modules/ride/ride.module';
+import { UserModule } from './modules/user/user.module';
 import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 import cloudinaryConfig from './config/cloudinary.config';
 
@@ -29,6 +30,7 @@ import cloudinaryConfig from './config/cloudinary.config';
     CloudinaryModule,
     DriverModule,
     RideModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

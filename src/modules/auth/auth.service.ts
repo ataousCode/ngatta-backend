@@ -11,7 +11,6 @@ import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { RequestOtpDto } from './dto/request-otp.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
-import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Injectable()
@@ -129,33 +128,6 @@ export class AuthService {
     await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     return tokens;
-  }
-
-  async updateProfile(userId: string, dto: UpdateProfileDto) {
-    const user = await this.prisma.user.findUnique({ where: { id: userId } });
-    if (!user) throw new NotFoundException('User not found');
-
-    if (dto.email && dto.email !== user.email) {
-      const emailExists = await this.prisma.user.findUnique({
-        where: { email: dto.email },
-      });
-      if (emailExists) throw new ConflictException('Email already in use');
-    }
-
-    return this.prisma.user.update({
-      where: { id: userId },
-      data: { ...dto },
-    });
-  }
-
-  async deleteAccount(userId: string) {
-    const user = await this.prisma.user.findUnique({ where: { id: userId } });
-    if (!user) throw new NotFoundException('User not found');
-
-    // Due to relational constraints (driver, rides, etc.), you might want to switch this to a soft delete.
-    // For now, we perform a hard delete as requested.
-    await this.prisma.user.delete({ where: { id: userId } });
-    return { message: 'Account deleted successfully' };
   }
 
   async resetPassword(dto: ResetPasswordDto) {

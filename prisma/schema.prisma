@@ -18,6 +18,8 @@ model User {
   password           String?
   name               String?
   avatar             String?
+  bio                String?
+  preferences        Json?    @default("{}")
   isEmailVerified    Boolean  @default(false)
   role               Role     @default(USER)
   hashedRefreshToken String?

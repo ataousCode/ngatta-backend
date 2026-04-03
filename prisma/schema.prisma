@@ -28,31 +28,43 @@ model User {
 }
 
 model Driver {
-  id        String   @id @default(uuid())
-  userId    String   @unique
-  isOnline  Boolean  @default(false)
-  lat       Float?
-  lng       Float?
+  id              String       @id @default(uuid())
+  userId          String       @unique
+  vehicleType     VehicleType  @default(CAR)
+  licensePlate    String?
+  idCardUrl       String?      // Cloudinary URL for ID/Passport
+  licenseUrl      String?      // Cloudinary URL for Driver's License
+  status          DriverStatus @default(PENDING)
+  rejectionReason String?
+  isVerified      Boolean      @default(false)
+  isOnline        Boolean      @default(false)
+  lat             Float?
+  lng             Float?
+  createdAt       DateTime     @default(now())
 
-  user      User     @relation(fields: [userId], references: [id])
-  rides     Ride[]   @relation("DriverRides")
+  user  User   @relation(fields: [userId], references: [id])
+  rides Ride[] @relation("DriverRides")
+}
+
+enum DriverStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
 
 model Ride {
-  id            String   @id @default(uuid())
-  userId        String
-  driverId      String?
+  id        String     @id @default(uuid())
+  userId    String
+  driverId  String?
+  status    RideStatus @default(PENDING)
+  fromLat   Float
+  fromLng   Float
+  toLat     Float
+  toLng     Float
+  createdAt DateTime   @default(now())
 
-  pickupLat     Float
-  pickupLng     Float
-  dropLat       Float
-  dropLng       Float
-
-  status        RideStatus @default(REQUESTED)
-  createdAt     DateTime   @default(now())
-
-  user          User   @relation("UserRides", fields: [userId], references: [id])
-  driver        Driver? @relation("DriverRides", fields: [driverId], references: [id])
+  user   User    @relation("UserRides", fields: [userId], references: [id])
+  driver Driver? @relation("DriverRides", fields: [driverId], references: [id])
 }
 
 enum Role {
@@ -61,10 +73,15 @@ enum Role {
   ADMIN
 }
 
+enum VehicleType {
+  CAR
+  MOTO
+}
+
 enum RideStatus {
-  REQUESTED
+  PENDING
   ACCEPTED
-  ON_GOING
+  IN_PROGRESS
   COMPLETED
   CANCELLED
 }

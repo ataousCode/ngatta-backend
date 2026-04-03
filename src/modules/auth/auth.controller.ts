@@ -33,6 +33,7 @@ export class AuthController {
   @Post('request-otp')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Request a 4-digit OTP code to be sent to a phone number' })
+  @ApiBody({ type: RequestOtpDto })
   @ApiResponse({ status: 200, description: 'OTP sent successfully' })
   async requestOtp(@Body() dto: RequestOtpDto) {
     return this.authService.requestOtp(dto);
@@ -41,6 +42,7 @@ export class AuthController {
   @Post('verify-otp')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Verify the OTP code and receive JWT tokens' })
+  @ApiBody({ type: VerifyOtpDto })
   @ApiResponse({ status: 200, description: 'Successfully verified and tokens returned' })
   async verifyOtp(@Body() dto: VerifyOtpDto) {
     return this.authService.verifyOtp(dto);
@@ -49,6 +51,7 @@ export class AuthController {
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Refresh access token using a valid refresh token' })
+  @ApiBody({ type: RefreshTokenDto })
   async refresh(@Body() dto: RefreshTokenDto) {
     const { refreshToken } = dto;
     const payload = this.jwtService.decode(refreshToken) as any;
@@ -78,6 +81,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Patch('profile')
   @ApiBearerAuth()
+  @ApiBody({ type: UpdateProfileDto })
   @ApiOperation({ summary: 'Update user profile (name, email, avatar)' })
   async updateProfile(
     @GetUser('userId') userId: string,
@@ -98,6 +102,7 @@ export class AuthController {
   @Post('forgot-password')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Request a password reset OTP' })
+  @ApiBody({ type: ForgotPasswordDto })
   async forgotPassword(@Body() dto: ForgotPasswordDto) {
     // Reusing OTP request logic for password reset
     return this.authService.requestOtp({ phone: dto.phone });
@@ -106,6 +111,7 @@ export class AuthController {
   @Post('reset-password')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Reset password using OTP code' })
+  @ApiBody({ type: ResetPasswordDto })
   async resetPassword(@Body() dto: ResetPasswordDto) {
     return this.authService.resetPassword(dto);
   }
